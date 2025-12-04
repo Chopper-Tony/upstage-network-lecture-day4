@@ -60,3 +60,4 @@ htmlcov/
 # Documentation
 README.md
 docs/
+.venv
