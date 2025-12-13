@@ -9,7 +9,7 @@ from app.logging import init_logging, create_logger
 
 app = FastAPI()
 init_logging()
-logger = create_logger('global_handler')
+logger = logging.getLogger(__name__)
 
 @app.exception_handler(EmailNotAllowedNameExistsError)
 async def email_not_allowed_handler(request: Request, exc: EmailNotAllowedNameExistsError):
