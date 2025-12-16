@@ -26,7 +26,7 @@ class UpstageClient:
                     "content": message.prompt
                 }
             ],
-            stream=True,
+            stream=False,
         )
         for chunk in stream:
             if chunk.choices[0].delta.content is not None:
