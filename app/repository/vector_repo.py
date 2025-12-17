@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 import chromadb
-import os
+
+from app.core.settings import settings
 
 
 class VectorRepository(ABC):
@@ -25,7 +26,7 @@ class VectorRepository(ABC):
 class ChromaDBRepository(VectorRepository):
     def __init__(self, client: chromadb.HttpClient, collection_name: str = None):
         self.client = client
-        self.collection_name = collection_name or os.getenv("CHROMA_COLLECTION_NAME", "upstage_embeddings")
+        self.collection_name = collection_name or settings.chromadb.collection_name
         self.collection = self.client.get_or_create_collection(
             name=self.collection_name,
             metadata={"description": "Upstage Solar2 embeddings collection"}

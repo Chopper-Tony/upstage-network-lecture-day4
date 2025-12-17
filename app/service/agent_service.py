@@ -1,21 +1,12 @@
-import os
 from typing import List, Dict, Any
 
-from openai import OpenAI # openai==1.52.2
-
-from dotenv import load_dotenv
+from app.repository.client.upstage_client import UpstageClient
 from app.service.vector_service import VectorService
-
-load_dotenv()
 
 
 class AgentService:
     def __init__(self, vector_service: VectorService):
-        api_key = os.getenv("UPSTAGE_API_KEY")
-        if not api_key:
-            raise ValueError("UPSTAGE_API_KEY environment variable is required")
-
-        self.client = OpenAI(api_key=api_key, base_url="https://api.upstage.ai/v1")
+        self.upstage_client = UpstageClient()
         self.vector_service = vector_service
     
     def process_query(self, query: str, context_limit: int = 3) -> Dict[str, Any]:
@@ -62,8 +53,7 @@ Question: {query}
 Please provide a helpful response based on the context above."""
         
         try:
-            response = self.client.chat.completions.create(
-                model="solar-1-mini-chat",
+            return self.upstage_client.create_chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -71,7 +61,6 @@ Please provide a helpful response based on the context above."""
                 temperature=0.3,
                 max_tokens=500
             )
-            return response.choices[0].message.content
         except Exception as e:
             return f"Error generating response: {str(e)}"
     

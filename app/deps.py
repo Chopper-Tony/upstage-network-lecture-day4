@@ -1,10 +1,8 @@
 from fastapi.params import Depends
 import chromadb
-
-from app.core.db import get_chroma_client
 from sqlalchemy.orm import Session
 
-from app.core.db import get_db
+from app.core.db import get_db, get_chroma_client
 from app.repository.user_repo import UserRepository
 from app.repository.vector_repo import VectorRepository, ChromaDBRepository
 from app.service.user_service import UserService

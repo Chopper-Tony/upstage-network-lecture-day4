@@ -1,21 +1,20 @@
-import os
 from typing import List
-
 from openai import OpenAI
+
+from app.core.settings import settings
 
 
 class UpstageClient:
-
     def __init__(self):
-        api_key = os.getenv("UPSTAGE_API_KEY")
-        if not api_key:
-            raise ValueError("UPSTAGE_API_KEY environment variable is required")
-        self.client = OpenAI(api_key=api_key, base_url="https://api.upstage.ai/v1")
+        self.client = OpenAI(
+            api_key=settings.upstage.api_key,
+            base_url=settings.upstage.base_url
+        )
 
     def create_embeddings(self, texts: List[str]) -> List[List[float]]:
         try:
             response = self.client.embeddings.create(
-                model="solar-embedding-1-large-query",
+                model=settings.upstage.embedding_model,
                 input=texts
             )
             return [embedding.embedding for embedding in response.data]
@@ -24,3 +23,15 @@ class UpstageClient:
 
     def create_embedding(self, text: str) -> List[float]:
         return self.create_embeddings([text])[0]
+
+    def create_chat_completion(self, messages: list, temperature: float = 0.3, max_tokens: int = 500) -> str:
+        try:
+            response = self.client.chat.completions.create(
+                model=settings.upstage.chat_model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            raise RuntimeError(f"Failed to create chat completion: {str(e)}")
