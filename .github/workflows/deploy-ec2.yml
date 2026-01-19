@@ -2,14 +2,6 @@ name: Deploy to EC2
 
 on:
   push:
-    #    branches: [ main ]
-    branches: [ deploy/githubaction ]
-  workflow_dispatch:
-
-name: Deploy to EC2
-
-on:
-  push:
     branches:
       - main
 
@@ -18,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to EC2 (run deploy.sh)
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.EC2_HOST }}
